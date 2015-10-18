@@ -1,0 +1,16 @@
+{
+  "name": "piecemeta-tsung-builder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Anton Koch <antonymousfeedback@gmail.com> (http://htmhell.de)",
+  "license": "ISC",
+  "dependencies": {
+    "bluebird": "^2.10.2",
+    "mongoose": "^4.1.11",
+    "xmlbuilder": "^3.1.0"
+  }
+}

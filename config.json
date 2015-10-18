@@ -1,0 +1,9 @@
+{
+  "mongodb": {
+    "host": "localhost",
+    "port": 27017,
+    "dbname": "piecemeta-api",
+    "user": "",
+    "pass": ""
+  }
+}
