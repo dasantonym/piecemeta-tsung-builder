@@ -54,11 +54,15 @@ Promise.promisify(config.load)()
                         });
                         pkgxml.ele('thinktime', {value: 5, random: true});
                         return Promise.map(streams, function (stream) {
-                            pkgxml.ele('request').ele('http', {
-                                version: '1.1',
-                                method: 'GET',
-                                url: '/streams/' + stream.uuid + '.json'
-                            });
+                            var frameBlocks = Math.ceil(stream.frameCount / 500);
+                            var trans = pkgxml.ele('transaction', {name: channel.title});
+                            for (var i = 0; i < frameBlocks; i+=1) {
+                                trans.ele('request').ele('http', {
+                                    version: '1.1',
+                                    method: 'GET',
+                                    url: '/streams/' + stream.uuid + '.json?from=' + (i * 500) + '&to=' + ((i + 1) * 500)
+                                });
+                            }
                         }, {concurrency: 1});
                     });
             }, {concurrency: 1})
@@ -69,6 +73,6 @@ Promise.promisify(config.load)()
     .then(function () {
         var out = xml.end({pretty: true});
         console.log('done.');
-        fs.writeFile('sessions.xml', out);
+        fs.writeFileSync('sessions.xml', out);
         process.exit(0);
     });
