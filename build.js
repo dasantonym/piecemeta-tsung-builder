@@ -70,4 +70,5 @@ Promise.promisify(config.load)()
         var out = xml.end({pretty: true});
         console.log('done.');
         fs.writeFile('sessions.xml', out);
+        process.exit(0);
     });
