@@ -24,12 +24,12 @@ Promise.promisify(config.load)()
         return mongoose.model('Package').find({});
     })
     .then(function (pkgs) {
-        prob = Math.round(100 / pkgs.length);
+        prob = 100 / pkgs.length;
         console.log('popularity: ', prob);
         return pkgs;
     })
     .map(function (pkg) {
-        var pkgxml = xml.ele('session', {name: pkg.title, type: 'ts_http', probability: 10});
+        var pkgxml = xml.ele('session', {name: pkg.title, type: 'ts_http', probability: prob});
         pkgxml.ele('request').ele('http', {version: '1.1', method: 'GET', url: '/packages.json'});
         pkgxml.ele('thinktime', {value: 10, random: true});
         pkgxml.ele('request').ele('http', {version: '1.1', method: 'GET', url: '/packages/' + pkg.uuid + '.json'});
