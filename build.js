@@ -4,8 +4,7 @@ var Promise = require('bluebird'),
     slug = require('slug'),
     config = require('./lib/config'),
     fs = require('fs'),
-    prob = 0,
-    xml = builder.create('sessions');
+    prob, xml;
 
 Promise.promisify(config.load)()
     .then(function () {
@@ -25,11 +24,12 @@ Promise.promisify(config.load)()
         return mongoose.model('Package').find({});
     })
     .then(function (pkgs) {
-        prob = 100 / pkgs.length;
+        prob = 100;// / pkgs.length;
         console.log('popularity: ', prob);
         return pkgs;
     })
     .map(function (pkg) {
+        xml = builder.create('sessions')
         var pkgxml = xml.ele('session', {name: slug(pkg.title) + '-' + pkg.uuid, type: 'ts_http', probability: prob});
         pkgxml.ele('request').ele('http', {version: '1.1', method: 'GET', url: '/packages.json'});
         pkgxml.ele('thinktime', {value: 10, random: true});
@@ -55,7 +55,7 @@ Promise.promisify(config.load)()
                         });
                         pkgxml.ele('thinktime', {value: 5, random: true});
                         return Promise.map(streams, function (stream) {
-                            var frameBlocks = Math.ceil(stream.frameCount / 2000);
+                            var frameBlocks = Math.ceil(stream.frameCount / 500);
                             var trans = pkgxml.ele('transaction', {name: slug(channel.title + ' ' + stream.title) + '-' + stream.uuid});
                             for (var i = 0; i < frameBlocks; i+=1) {
                                 trans.ele('request').ele('http', {
@@ -68,12 +68,12 @@ Promise.promisify(config.load)()
                     });
             }, {concurrency: 1})
             .then(function () {
-                pkgxml.ele('thinktime', {value: 10, random: true});
+                //pkgxml.ele('thinktime', {value: 10, random: true});
+                fs.writeFileSync('sessions-' + slug(pkg.title) + '.xml', xml.end({pretty: true}));
             });
     }, {concurrency: 1})
     .then(function () {
-        var out = xml.end({pretty: true});
+        //fs.writeFileSync('sessions.xml', xml.end({pretty: true}));
         console.log('done.');
-        fs.writeFileSync('sessions.xml', out);
         process.exit(0);
     });
