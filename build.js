@@ -56,7 +56,7 @@ Promise.promisify(config.load)()
                         pkgxml.ele('thinktime', {value: 5, random: true});
                         return Promise.map(streams, function (stream) {
                             var frameBlocks = Math.ceil(stream.frameCount / 2000);
-                            var trans = pkgxml.ele('transaction', {name: slug(channel.title) + '-' + channel.uuid});
+                            var trans = pkgxml.ele('transaction', {name: slug(channel.title + ' ' + stream.title) + '-' + stream.uuid});
                             for (var i = 0; i < frameBlocks; i+=1) {
                                 trans.ele('request').ele('http', {
                                     version: '1.1',
