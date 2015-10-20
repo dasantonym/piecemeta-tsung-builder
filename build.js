@@ -30,7 +30,7 @@ Promise.promisify(config.load)()
     })
     .map(function (pkg) {
         xml = builder.create('sessions')
-        var pkgxml = xml.ele('session', {name: slug(pkg.title).replace('-', '_') + '-' + pkg.uuid, type: 'ts_http', probability: prob});
+        var pkgxml = xml.ele('session', {name: (slug(pkg.title) + '-' + pkg.uuid).replace(/-/g, ''), type: 'ts_http', probability: prob});
         pkgxml.ele('request').ele('http', {version: '1.1', method: 'GET', url: '/packages.json'});
         pkgxml.ele('thinktime', {value: 10, random: true});
         pkgxml.ele('request').ele('http', {version: '1.1', method: 'GET', url: '/packages/' + pkg.uuid + '.json'});
@@ -56,7 +56,7 @@ Promise.promisify(config.load)()
                         pkgxml.ele('thinktime', {value: 5, random: true});
                         return Promise.map(streams, function (stream) {
                             var frameBlocks = Math.ceil(stream.frameCount / 500);
-                            var trans = pkgxml.ele('transaction', {name: (slug(channel.title + ' ' + stream.title) + '-' + stream.uuid).replace('-', '_')});
+                            var trans = pkgxml.ele('transaction', {name: (slug(channel.title + ' ' + stream.title) + '-' + stream.uuid).replace(/-/g, '')});
                             for (var i = 0; i < frameBlocks; i+=1) {
                                 trans.ele('request').ele('http', {
                                     version: '1.1',
